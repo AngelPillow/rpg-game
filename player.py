@@ -510,4 +510,4 @@ def showdown(player,enemy):
         menu()
 
 
-menu()
+main()
