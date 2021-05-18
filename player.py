@@ -263,7 +263,7 @@ class Enemy:
 def main():
     global p1 , e1 , name
     intro()
-    name = input('Enter your name : ')
+    name = input('Enter your name : \n')
     menu()
 
 def menu():
