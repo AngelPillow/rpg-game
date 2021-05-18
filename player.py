@@ -149,18 +149,18 @@ class Enemy:
         self.emaxdmg = emaxdmg[self.eclass]
         self.edamagestr = edamagestr[self.eclass]
         if eclass == 'zombie':
-            self.ename = zombname[randint(0,len(zombname))]
+            self.ename = zombname[randint(0,len(zombname)-1)]
         elif eclass == 'skeleton':
-            self.ename = skelname[randint(0,len(skelname))]
+            self.ename = skelname[randint(0,len(skelname)-1)]
         elif eclass == 'lich':
-            self.ename = lichname[randint(0,len(lichname))]
+            self.ename = lichname[randint(0,len(lichname)-1)]
 
     def ecustom(self):
         self.eclass = input("Select your opponent's custom class ")
         while True:
             self.ename = input("Select your opponent's name , type [r] for random")
             if self.ename.lower().strip() == 'r':
-                self.ename = ename[randint(0,len(ename))]
+                self.ename = ename[randint(0,len(ename)-1)]
                 break
         self.ehp = input(f"Select  {self.ename}'s HitPoint total (Integer)")
         while True:
