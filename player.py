@@ -106,7 +106,7 @@ class Player:
                 print('Enter a valid move.\n')
                 self.pmove = input('Choose your move! [1].Attack [2].Defend [3].Focus \n')
             if int(self.pmove) == 1:
-                print(f'You attack with your {weapons[self.pclass]}!')
+                print(f'You attack with your {self.weapon}!')
                 return 1
             elif int(self.pmove) == 2:
                 print(f"You try to absorb the enemy's incoming attacks!")
@@ -243,7 +243,7 @@ class Enemy:
             else:
                 self.emove = 3
         if self.emove == 1:
-            print(f'The enemy {self.eclass} attacks you with their {eweapons[self.eclass]}!')
+            print(f'The enemy {self.eclass} attacks you with their {self.eweapon}!')
             return 1
         elif self.emove == 2:
             print(f"The enemy {self.eclass} tries to deflect your next attacks!")
