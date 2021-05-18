@@ -57,7 +57,7 @@ class Player:
                 sleep(2)
                 print('For example , 3d6 means that you roll 3 (three) 6-sided dice')
                 sleep(1)
-            if self.damage == '1':
+            elif self.damage == '1':
                 self.damage = damage['fighter']
                 self.mindmg = mindmg['fighter']
                 self.maxdmg = maxdmg['fighter']
