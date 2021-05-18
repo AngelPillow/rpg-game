@@ -352,7 +352,7 @@ def info():
         else:
             print("That asset doesn't exist / Invalid choice.")
             print('You are heading back to the main menu\n')
-            info()
+            menu()
 
 def intro():
     print('Welcome to the pre Alpha version of "The Game" (Pending title).')
