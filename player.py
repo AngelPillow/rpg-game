@@ -190,7 +190,7 @@ class Enemy:
                 sleep(2)
                 print('For example , 3d6 means that you roll 3 (three) 6-sided dice')
                 sleep(1)
-            if self.edamage == '1':
+            elif self.edamage == '1':
                 self.edamage = edamage['skeleton']
                 self.emindmg = emindmg['skeleton']
                 self.emaxdmg = emaxdmg['skeleton']
