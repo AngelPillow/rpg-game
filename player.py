@@ -376,10 +376,8 @@ def intro():
     print('What kind of opponents are you ready to face? Because they are lurking . . .\n')
 
 def custombattle():
-    ch = select()
-    p1 = Player(ch)
-    op = challenger()
-    e1 = Enemy(op)
+    p1 = Player('wizard')
+    e1 = Enemy('lich')
     p1.custom()
     e1.ecustom()
     showdown(p1,e1)
