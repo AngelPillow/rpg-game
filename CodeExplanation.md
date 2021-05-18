@@ -11,12 +11,13 @@ d(num,faces) ----------> this represents the sum of the prices of the dice 'thro
 
 
 1.[Classes]
+----------------
 
 The classes in this game are the one of the player ( Player() ) and of the CPU playing the opponent ( Enemy() ).
 
-~ Class characteristics:
 
-* Player Class
+
+#Player Class
 ----------------
 1) class  (in-game character) , i.e. fighter
 2) weapon , i.e. sword
@@ -37,7 +38,7 @@ The classes in this game are the one of the player ( Player() ) and of the CPU p
 
 
 
-* Enemy Class
+#Enemy Class
 ---------------
 (Same characteristics as above , but to call them I have added the e- in front of the original , i.e. eweapon / edamage)
 9)skelname , lichname , zombname ----------> lists of possible names for opposing skeletons , liches , zombies 
@@ -50,8 +51,8 @@ The classes in this game are the one of the player ( Player() ) and of the CPU p
 
 
 
----Game Functions---
-____________________
+2.[Game Functions]
+-------------------
 
 - main() -----------> The heart of the game
 
