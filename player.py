@@ -298,14 +298,14 @@ def menu():
         print('             ~~~|  [4]        Back            |~~~\n')
         print('### Please note that this game is not essentially balanced , since it has not been playtested ###\n')
         reenter = input('Type number to select : ')
-        if reenter == '1':
+        if reenter == '2':
             defaultbattle()
-        elif reenter == '2':
-            custombattle()
         elif reenter == '3':
+            custombattle()
+        elif reenter == '4':
             print('You are now heading back to the main menu\n')
             menu()
-        elif reenter == '4':
+        elif reenter == '1':
             tutorial()
         else:
             print('Invalid choice.\n')
