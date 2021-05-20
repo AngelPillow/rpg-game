@@ -1,5 +1,6 @@
 from random import *
 from time import sleep
+import copy
 
 def d(n,faces):
     dsum=0
@@ -28,35 +29,40 @@ class Player:
         self.damagestr = damagestr[self.pclass]
 
     def custom(self):
-        self.pclass = input('Select your custom class ')
-        self.hp = input('Select your HitPoint total (Integer)')
+        self.pclass = input('\nSelect your custom class : ')
+        self.hp = input('\nSelect your HitPoint total ( 0 < Integer <= 1000) : ')
         while True:
             try:
                 int(self.hp)
-                break
+                if 0 >= int(self.hp) or int(self.hp) > 1000:
+                    print('Enter a valid number ')
+                    self.hp = input('\nSelect your HitPoint total (Integer) : ')
+                else:
+                    break
             except:
                 print('Enter a valid number ')
-                self.hp = input('Select your HitPoint total (Integer)')
+                self.hp = input('\nSelect your HitPoint total (Integer) : ')
         self.hp = int(self.hp)
-        self.weapon = input('Select your weapon ')
+        self.weapon = input('\nSelect your weapon : ')
         while True:
-            self.ac = input('Select your ArmourClass total , min = 0 , max = 17.5')
+            self.ac = input('\nSelect your ArmourClass total , min = 0 , max = 15 (can be float) : ')
             try:
                 float(self.ac)
-                if 17.5 >= float(self.ac) >= 0:
+                if 15 >= float(self.ac) >= 0:
                     self.ac = float(self.ac)
                     break
                 else:
                     print('Invalid input , try again. ')
             except:
                 print('Invalid input , try again.')
+        self.damage = input('\nSelect your damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ')
         while True:
-            self.damage = input('Select your damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom')
             if self.damage.lower() == 'i':
-                print('XdY in tabletop rpg games means X dice with Y faces')
+                print('XdY in tabletop rpg games means X dice with Y faces\n')
                 sleep(2)
-                print('For example , 3d6 means that you roll 3 (three) 6-sided dice')
+                print('For example , 3d6 means that you roll 3 (three) 6-sided dice\n')
                 sleep(1)
+                self.damage = input('Select your damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ')
             elif self.damage == '1':
                 self.damage = damage['fighter']
                 self.mindmg = mindmg['fighter']
@@ -76,47 +82,49 @@ class Player:
                 self.damagestr = damagestr['monk']
                 break
             elif self.damage == 'c':
-                vol = input('How many dice ')
-                face = input('How many sides ')
+                vol = input('\nHow many dice (min = 1 / max = 100)')
+                face = input('How many sides (Choose between 4 ,6 ,8 ,10 ,12 ,20) : ')
                 try:
                     int(vol)
                     int(face)
-                    self.damage = d(int(vol), int(face))
-                    self.mindmg = int(vol)
-                    self.maxdmg = int(face)
-                    self.damagestr = f'd({int(vol)}, {int(face)})'
-                    break
+                    if ( 1 <= int(vol) <= 100 ) and (int(face) in [4, 6, 8, 10 ,12 ,20]):
+                        self.damage = d(int(vol), int(face))
+                        self.mindmg = int(vol)
+                        self.maxdmg = int(face)
+                        self.damagestr = f'd({int(vol)}, {int(face)})'
+                        break
+                    else:
+                        print('Invalid input , try again. ')
                 except:
                     print('Invalid input , try again. ')
-
             else:
-                print('Enter a valid choice \n')
-                self.damage = input('Select your damage type: [1].3d6 [2].2d12 [3].4d4 [i].Info [c].Custom')
+                print('Enter a valid choice ')
+                self.damage = input('\nSelect your damage type: [1].3d6 [2].2d12 [3].4d4 [i].Info [c].Custom : ')
 
     def getstats(self):
         self.stats = [self.pclass, self.hp, self.weapon,  self.ac, self.damagestr]
         return self.stats
 
     def move(self):
-        self.pmove = input('Choose your move! [1].Attack [2].Prepare [3].Focus \n')
+        self.pmove = input('\nChoose your move! [1].Attack [2].Prepare [3].Focus:')
         while True:
             try:
                 int(self.pmove)
             except:
                 print('Enter a valid move.\n')
-                self.pmove = input('Choose your move! [1].Attack [2].Defend [3].Focus \n')
+                self.pmove = input('\nChoose your move! [1].Attack [2].Defend [3].Focus: ')
             if int(self.pmove) == 1:
-                print(f'You attack with your {self.weapon}!')
+                print(f'\nYou attack with your {self.weapon}!')
                 return 1
             elif int(self.pmove) == 2:
-                print(f"You try to absorb the enemy's incoming attacks!")
+                print(f"\nYou try to absorb your opponent's incoming attacks!")
                 return 2
             elif int(self.pmove) == 3:
-                print(f'You attempt to focus on your next attack!')
+                print(f'\nYou attempt to focus on your next attacks!')
                 return 3
             else:
                 print('Enter a valid move.\n')
-                self.pmove = input('Choose your move! [1].Attack [2].Defend [3].Focus \n')
+                self.pmove = input('\nChoose your move! [1].Attack [2].Defend [3].Focus: ')
 
     def alive(self):
         if self.hp > 0:
@@ -134,7 +142,7 @@ class Enemy:
     ehitpoints = {'skeleton': 160 , 'lich': 140 , 'zombie': 150}
     emindmg =  {'skeleton': 3 , 'lich': 2 , 'zombie': 4}
     emaxdmg = {'skeleton': 24 , 'lich': 24 , 'zombie': 24}
-    zombname = ['Dancer', 'Gnawer', 'Frenzied', 'Blubber Zombie','Ripe Zombie','Clacker','Slumper','Mutant','Grower','Primer']
+    zombname = ['Dancer', 'Gnawer', 'Frenzied', 'Blabber','Riper','Clacker','Slumper','Mutant','Grower','Primer']
     lichname = ["Cram'ghaic","Mhud'ghe","Chozgee","Kradredh","Vhoktag","Thoq'gac","Nanzagradh","Shum'zoudas","Dykragnuk","Thek'vagnudh"]
     skelname = ["Naeryndam Herfir", "Thalanil Miranan", "Hagwin Balrieth", "Onas Virrel", "Aolis Enren","Braumseild", "Tyegnedrorr", "Lul"]
     ename = zombname + lichname + skelname
@@ -156,40 +164,43 @@ class Enemy:
             self.ename = lichname[randint(0,len(lichname)-1)]
 
     def ecustom(self):
-        self.eclass = input("Select your opponent's custom class ")
+        self.eclass = input("\nSelect your opponent's custom class : ")
         while True:
-            self.ename = input("Select your opponent's name , type [r] for random")
+            self.ename = input("\nSelect your opponent's name , type [r] for random : ")
             if self.ename.lower().strip() == 'r':
                 self.ename = ename[randint(0,len(ename)-1)]
                 break
-        self.ehp = input(f"Select  {self.ename}'s HitPoint total (Integer)")
+            else:
+                break
+        self.ehp = input(f"\nSelect  {self.ename}'s HitPoint total (Integer) : ")
         while True:
             try:
                 int(self.ehp)
                 break
             except:
                 print('Enter a valid number ')
-                self.ehp = input(f"Select  {self.ename}'s HitPoint total (Integer)")
+                self.ehp = input(f"\nSelect  {self.ename}'s HitPoint total (Integer) : ")
         self.ehp = int(self.ehp)
-        self.eweapon = input(f"Select  {self.ename}'s weapon ")
+        self.eweapon = input(f"\nSelect  {self.ename}'s weapon : ")
         while True:
-            self.eac = input(f"Select {self.ename}'s ArmourClass total , min = 0 , max = 17.5 (can be float)")
+            self.eac = input(f"\nSelect {self.ename}'s ArmourClass total , min = 0 , max = 15 (can be float) : ")
             try:
                 float(self.eac)
-                if 17.5 >= float(self.eac) >= 0:
+                if 15 >= float(self.eac) >= 0:
                     self.eac = float(self.eac)
                     break
                 else:
                     print('Invalid input , try again. ')
             except:
                 print('Invalid input , try again.')
+        self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ")
         while True:
-            self.edamage = input(f"Select  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom")
             if self.edamage.lower() == 'i':
                 print('XdY in tabletop rpg games means X dice with Y faces')
                 sleep(2)
                 print('For example , 3d6 means that you roll 3 (three) 6-sided dice')
                 sleep(1)
+                self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ")
             elif self.edamage == '1':
                 self.edamage = edamage['skeleton']
                 self.emindmg = emindmg['skeleton']
@@ -209,16 +220,19 @@ class Enemy:
                 self.edamagestr = edamagestr['zombie']
                 break
             elif self.edamage == 'c':
-                vol = input('How many dice ')
-                face = input('How many sides ')
+                vol = input('\nHow many dice (min = 1 / max = 100)')
+                face = input('How many sides ( Choose between 4 ,6 ,8 ,10 ,12 ,20 ) : ')
                 try:
                     int(vol)
                     int(face)
-                    self.edamage = d(int(vol), int(face))
-                    self.emindmg = int(vol)
-                    self.emaxdmg = int(face)
-                    self.edamagestr = f'd({int(vol)}, {int(face)})'
-                    break
+                    if (1 <= int(vol) <= 100) and (int(face) in [4, 6, 8, 10, 12, 20]):
+                        self.edamage = d(int(vol), int(face))
+                        self.emindmg = int(vol)
+                        self.emaxdmg = int(face)
+                        self.edamagestr = f'd({int(vol)}, {int(face)})'
+                        break
+                    else:
+                        print('Invalid input , try again. ')
                 except:
                     print('Invalid input , try again. ')
             else:
@@ -259,29 +273,31 @@ class Enemy:
             return False
 
 
-
 def main():
     global p1 , e1 , name
-    intro()
-    name = input('Enter your name : \n')
+    show = input('Show intro ? [Y] / [N] : ')
+    if show.lower().strip() == 'y':
+        intro()
+    name = input('Enter your name : ')
     menu()
 
 def menu():
-    print('             ~~~|         Main menu        |~~~\n')
-    print('             ~~~|  [1]    Game Info        |~~~')
-    print('             ~~~|  [2]     Battle          |~~~')
-    print('             ~~~|  [3]      Quit           |~~~\n')
+    print('             ~~~|         Main menu         |~~~\n')
+    print('             ~~~|  [1]    Game Info         |~~~')
+    print('             ~~~|  [2]     Battle           |~~~')
+    print('             ~~~|  [3]      Quit            |~~~\n')
     print('### Since this is a alpha version of the game , it may have inconsistencies ###\n')
-    enter = input('Type number to select')
+    enter = input('Type number to select : ')
     if enter == '1':
         info()
     elif enter == '2':
-        print('             ~~~|           Battle Modes        |~~~\n')
-        print('             ~~~|   [1]    Classic Battle       |~~~')
-        print('             ~~~|   [2]     Custom Battle       |~~~')
-        print('             ~~~|   [3]         Back            |~~~\n')
+        print('             ~~~|         Battle Modes        |~~~\n')
+        print('             ~~~|  [1]      Tutorial          |~~~')
+        print('             ~~~|  [2]   Classic Battle       |~~~')
+        print('             ~~~|  [3]    Custom Battle       |~~~')
+        print('             ~~~|  [4]        Back            |~~~\n')
         print('### Please note that this game is not essentially balanced , since it has not been playtested ###\n')
-        reenter = input('Type number to select')
+        reenter = input('Type number to select : ')
         if reenter == '1':
             defaultbattle()
         elif reenter == '2':
@@ -289,22 +305,25 @@ def menu():
         elif reenter == '3':
             print('You are now heading back to the main menu\n')
             menu()
+        elif reenter == '4':
+            tutorial()
         else:
             print('Invalid choice.\n')
+            sleep(1)
             print('You are now heading back to the main menu\n')
             menu()
     else:
         print('You are now exiting the game.\n')
 
 def info():
-    print('This is an info guide on the battle mechanisms of "The Game" (Pending title).')
-    sleep(1)
-    print("Be sure to read this if you haven't played the game yet!")
-    sleep(1)
-    print('In this game the Player (you!) fights an opponent in a classic text-based rpg style.')
-    sleep(1)
-    print('The key traits of your character are: Class , HitPoints , Damage and Armour Class')
-    sleep(1)
+    print('\nThis is an info guide on the battle mechanisms of "The Game" (Pending title).\n')
+    sleep(3)
+    print("Be sure to read this if you haven't played the game yet!\n")
+    sleep(2)
+    print('In this game the Player (you!) fights an opponent in a classic text-based rpg style.\n')
+    sleep(2)
+    print('The key traits of your character are: Class , HitPoints , Damage and Armour Class\n')
+    sleep(2)
     while True:
         know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         if know.lower().strip() == 'class':
@@ -346,7 +365,7 @@ def info():
             print()
             print('Note: This took way longer than expected...\n')
         elif know.lower().strip() == 'quit':
-            print('You have now exited the info menu.\n')
+            print('You are now exiting the info menu.\n')
             menu()
             break
         else:
@@ -355,23 +374,23 @@ def info():
             menu()
 
 def intro():
-    print('Welcome to the pre Alpha version of "The Game" (Pending title).')
+    print('\nWelcome to the pre Alpha version of "The Game" (Pending title).\n')
     sleep(2)
-    print('This is a simulator for text-based rpg style battles')
+    print('This is a simulator for text-based rpg battles\n')
     sleep(2)
-    print('Three different classes await you... Three different ways to play the game.')
+    print('Three different classes await you... Three different ways to play the game.\n')
     sleep(2)
     print('Fighter')
     sleep(1)
     print('           Wizard')
     sleep(1)
-    print('                      Monk')
+    print('                      Monk\n')
     sleep(1)
-    print('The fighter uses their sword and bulky defence to outlast their opponent.')
+    print('The fighter uses their sword and bulky defence to outlast their opponent.\n')
     sleep(2)
-    print('The wizard specializes in destructive spells , while being relatively easy to be taken down.')
+    print('The wizard specializes in destructive spells , while being relatively easy to be taken down.\n')
     sleep(2)
-    print('Last but not least , the monk uses their own hands to knock out their opponent.')
+    print('Last but not least , the monk uses their own hands to knock out their opponent.\n')
     sleep(2)
     print('What kind of opponents are you ready to face? Because they are lurking . . .\n')
 
@@ -382,7 +401,6 @@ def custombattle():
     e1.ecustom()
     showdown(p1,e1)
 
-
 def defaultbattle():
     ch = select()
     p1 = Player(ch)
@@ -391,10 +409,12 @@ def defaultbattle():
     showdown(p1,e1)
 
 def select():
-    char = input('Type the name of your desired class\n')
+    char = input('Type the name of your desired class : [Fighter] / [Wizard] / [Monk] \n')
     while True:
-        if char == 'fighter' or char == 'wizard' or char == 'monk':
-            print(f'So you are {name} the {char}! Well then!')
+        if char.lower().strip() == 'fighter' or char.lower().strip() == 'wizard' or char.lower().strip() == 'monk':
+            char = char.lower().strip()
+            sleep(1)
+            print(f'\nSo you are {name} the {char}! Well then!\n')
             break
         else:
             print('Enter a valid class')
@@ -419,41 +439,53 @@ def challenger():
 def moveoutcome(player,enemy):
     global c , ch , dmg
     c = [0, 0, 0]
+    ch = 0
     mymove = player.move()
     roll = d(1,20)
     if mymove == 1:
         c[0]+=1
         ch = 1
         print(f'You rolled a {roll}!')
+        sleep(1)
         if roll >= enemy.eac:
-            print('The attack hits!\n')
+            print('The attack hits!')
+            sleep(1)
             if roll == 20:
-                print('### Critical Hit ###\n')
+                print('\n### Critical Hit ###\n')
+                sleep(2)
                 dmg = 2 * player.damage
-                print(f'You dealt a total of {dmg} points of damage to  {enemy.ename}!')
+                print(f'You dealt a total of {dmg} points of damage to  {enemy.ename}!\n')
                 enemy.ehp -= dmg
+                return True
             else:
                 dmg = player.damage
-                print(f'You dealt a total of {dmg} damage!')
+                sleep(2)
+                print(f'You dealt a total of {dmg} points of damage!\n')
                 enemy.ehp -= dmg
+                return True
         else:
             print("The attack doesn't hit...\n")
+            return True
     elif mymove == 2:
+        sleep(1)
         if player.ac >= 15:
-            print(f'You cannot make it harder for  {enemy.ename} to hit you...')
+            print(f'You cannot make it harder for {enemy.ename} to hit you...\n')
+            return True
         else:
             c[1] += 1
             ch = 2
-            print('It will be now harder for the opponent to hit you!\n')
+            print('It is now harder for the opponent to hit you!\n')
             player.ac += 0.5
+            return True
     elif mymove == 3:
+        sleep(1)
         c[2] += 1
         ch = 3
         print('Your next attacks will be more devastating!\n')
         player.damage += d(1,4)
         player.mindmg += 1
         player.maxdmg += 4
-
+        return True
 
 def emoveoutcome(player,enemy):
     global edmg
@@ -461,51 +493,260 @@ def emoveoutcome(player,enemy):
     eroll = d(1,20)
     if theirmove == 1:
         print(f'The enemy rolled a {eroll}!')
+        sleep(1)
         if eroll >= player.ac:
-            print('The attack hits!\n')
+            print('The attack hits!')
+            sleep(1)
             if eroll == 20:
-                print('### Critical Hit ###\n')
+                print('\n### Critical Hit ###\n')
+                sleep(2)
                 edmg = 2 * enemy.edamage
-                print(f' {enemy.ename} dealt {edmg} points of damage to you!')
+                print(f' {enemy.ename} dealt {edmg} points of damage to you!\n')
                 player.hp -= edmg
             else:
                 edmg = enemy.edamage
-                print(f' {enemy.ename} dealt {edmg} points of damage to you!')
+                sleep(2)
+                print(f' {enemy.ename} dealt {edmg} points of damage to you!\n')
                 player.hp -= edmg
         else:
             print("The attack doesn't hit...\n")
     elif theirmove == 2:
+        sleep(1)
         if enemy.eac >= 17.5:
-            print(" {enemy.ename} cannot make it any harder for you to hit")
+            print(f"{enemy.ename} cannot make it any harder for you to hit them")
         else:
             print(f'It will be now harder to hit  {enemy.ename}!\n')
             enemy.eac += 0.5
     elif theirmove == 3:
+        sleep(1)
         print(f"{enemy.ename}'s next attacks will be more devastating!\n")
         enemy.edamage += d(1,10)
         enemy.emindmg += 1
         enemy.emaxdmg += 10
 
+def tutorial():
+    print(f'\nWelcome to the toturial {name} , where (I hope!) most of your possible questions about the game will be cleared out!\n')
+    sleep(3)
+    print('You are a young wizard , taking a little stroll through a nearby forest , since you are taking a break from studying. \n')
+    sleep(3)
+    print('Nature seemed to always relax you and amaze you at the same time , since you innately sensed the magic hidden in it\n')
+    sleep(3)
+    print('The city on the other hand might be safer to wander around , but these days it is in an uproar.\n')
+    sleep(3)
+    print("People from all over the city talk of an evil power rising from the depths of a cave , just a couple of miles outside of the city's borders\n")
+    sleep(4)
+    print("Thus , the whole city's brimming with soldiers and war mages , ready to attack the unknown threat\n")
+    sleep(3)
+    print('Yet , no signs of it have been sighted outside of the cave.\n')
+    sleep(3)
+    print("Or until now! As you walk through the forest trail you detect a black sphere floating in the air , just some feet in front of you.\n")
+    sleep(3)
+    print("Your curiosity is piqued and you can't help it but approach carefully the sphere.\n")
+    sleep(3)
+    print('As you lumber towards this unexpected sight , you notice a figure pop out of the orb and stare at you.\n')
+    sleep(3)
+    print('You feel a shiver running down your spine , as this human-like creature strides towards your position.\n')
+    sleep(3)
+    print('\n*** Get ready to face it ***\n')
+    sleep(5)
+    p1 = Player('Wizard')
+    p1.hp = 50
+    e1 = Enemy('Lich')
+    e1.ehp = 30
+    print(f'\nThe battle between you and the opposing lich has begun!\n')
+    sleep(2)
+    print('\n *** So the battle has started! Get ready , I think you get to attack first ***\n')
+    sleep(3)
+    print('\n*** When battling , you can use your [Attack] action to try and damage your opponent ***\n')
+    sleep(3)
+    while True:
+        epilogh = input('Choose your move! [A].Attack [?].??????? [?].?????:\n')
+        if epilogh.lower().strip() == 'a':
+            break
+        else:
+            print('Type [A] to attack!\n')
+    print('\nYou attack your opponent with your firebolt! \n')
+    sleep(1)
+    print('\n*** After selecting to attack but before the attack deals damage , a 20-sided dice')
+    sleep(2)
+    print('    is rolled (or at least it is a simulation of a such throw). Then , if the roll')
+    sleep(2)
+    print("    is equal or higher than your opponent's ArmourClass (see GameInfo for more info)")
+    sleep(2)
+    print("    the attack hits! Otherwise , you miss. Let's see how this one goes! ***\n")
+    sleep(2)
+    print(f'You rolled a {randint(10,19)} !\n')
+    sleep(1.5)
+    print('The attack hits! \n')
+    sleep(1.5)
+    print('\n*** Nice! Since the attack landed , you get to deal damage to your opponent! *** \n')
+    sleep(2)
+    dmg = p1.damage
+    print(f'You dealt a total of {dmg} points of damage!\n')
+    e1.ehp -= dmg
+    print('\n*** Now that you attacked , prepare for what your opponent is ready to do on their turn! ***\n')
+    sleep(2)
+    print(" [Lich] : You dare oppose me mortal? You don't seem to understand who you are facing\n")
+    sleep(2)
+    print(' [Lich] : I am Norfir Wildstrider , or at least I was... Not that it matters for you! Ahahahaha!\n')
+    sleep(2)
+    print(' [Norfir Wildstrider(?)] : You better remember my name as you are visiting Hades for dinner tonight!\n')
+    sleep(2)
+    print("\n*** Talk is cheap , let's see what he's got! ***\n")
+    sleep(2)
+    print('Norfir Wildstrider(?) attacks you with his eldritch blast!\n')
+    sleep(2)
+    print(f'Norfir Wildstrider(?) rolled a {randint(10,19)} !\n')
+    sleep(1.5)
+    print('The attack hits!\n')
+    sleep(1.5)
+    edmg = e1.edamage
+    print(f'Norfir Wildstrider(?) dealt a total of {edmg} points of damage!\n')
+    p1.hp -= edmg
+    sleep(2)
+    print(f"~~~ Your HP : [{p1.hp}] VS Norfir's(?) HP [{e1.ehp}] ~~~")
+    sleep(2)
+    print(" [Norfir Wildstrider(?)] : This is unfair! Where are your friends to help you?\n")
+    sleep(2)
+    while True:
+        answer = input(f'''[1].I don't need anything but my spells to kill you!
+                      [2].I have been using only the 5% of my powers all along! 
+                      [3].Where's Hermione when I need her?... Wait, wrong game.
+                      [4].So nobody has defeated you yet! It will be me , Dio! err {name} !I mean...\n''')
+        if answer == '1':
+            print(f" [{name}] : I don't need anything but my spells to kill you!\n")
+            sleep(2)
+            print(' [Norfir Wildstrider(?)] : So you want to go early for dinner huh? Let me give you a lift.\n')
+            break
+        elif answer == '2':
+            print(f' [{name}] : I have been using only the 5% of my powers all along!\n')
+            sleep(2)
+            print(' [Norfir Wildstrider(?)] : Is that so? Then show me what you can do!\n')
+            break
+        elif answer == '3':
+            print(f" [{name}] : Where's Hermione when I need her?... Wait, wrong game.\n")
+            sleep(2)
+            print(' [Norfir Wildstrider(?)] : ???\n')
+            break
+        elif answer == '4':
+            print(f' [{name}] : So nobody has defeated you yet! It will be me , Dio! err {name} ! I mean...\n')
+            sleep(2)
+            print(' [Norfir Wildstrider(?)] : Is that so? Then come as close to me as you like!\n')
+            break
+        else:
+            print(f' [{name}] : . . .\n')
+            sleep(2)
+            print(' [Norfir Wildstrider(?)] : The silent treatment huh?\n')
+            break
+    sleep(2)
+    print("*** Round 2 is up champ ! Now let's try a different approach. Instead of attacking ,")
+    sleep(3)
+    print(" try to make it tougher for your opponent to hit you with his spells.")
+    sleep(3)
+    print(" You can achieve that by choosing to [Prepare] during your turn.")
+    sleep(3)
+    print("By preparing , you get a flat increase to your ArmourClass. That somewhat lowers the odds of you getting hit ***")
+    sleep(3)
+    while True:
+        epilogh2 = input('Choose your move! [A].Attack [B].Prepare [?].?????:\n')
+        if epilogh2.lower().strip() == 'b':
+            break
+        else:
+            print('Type [B] to prepare!\n')
+    print(f"You try to absorb Norfir's(?) incoming attacks!\n")
+    sleep(2)
+    p1.ac += 0.5
+    print("*** Hold tight! Norfir's(?) about to unleash another barrage of spells ***\n")
+    sleep(3)
+    print('Norfir Wildstrider(?) attacks you with his magic missiles!\n')
+    sleep(2)
+    print(f'Norfir Wildstrider(?) rolled a {randint(6, 8)} !\n')
+    sleep(1.5)
+    print("The attack doesn't hit!\n")
+    sleep(2)
+    print(f"\n~~~ Your HP : [{p1.hp}] VS Norfir's(?) HP [{e1.ehp}] ~~~\n")
+    sleep(2)
+    print(" [Norfir Wildstrider(?)] : Nonsense! How did I miss? It's ok. That was a warning shot.\n")
+    sleep(3)
+    print(f' [{name}] : Yeah , right...\n')
+    sleep(2)
+    print('*** One more helpful buzz and I will let you finish him! I guess you have already seen that')
+    sleep(2)
+    print(' you have one more in-battle choice. Well , that is [Focus]. By focusing on your next attacks')
+    sleep(2)
+    print(" you will be able to dish out more damage than normal! Why didn't I tell you about that sooner? Whoopsie! *** ")
+    sleep(3)
+    while True:
+        epilogh3 = input('Choose your move! [A].Attack [B].Prepare [C].Focus :\n')
+        if epilogh3.lower().strip() == 'c':
+            break
+        else:
+            print('Type [C] to focus!\n')
+    print('You attempt to focus on your next attacks!\n')
+    sleep(2)
+    print('Your next attacks will be more devastating!\n')
+    sleep(2)
+    p1.damage += d(1, 4)
+    print(' Norfir Wildstrider(?) tries to focus on his next attacks!\n')
+    sleep(2)
+    e1.edamage += d(1,4)
+    print("Norfir's(?) incoming attacks will be more powerful!\n")
+    sleep(2)
+    print("*** It's on you now to finish him. Use your new knowledge to style on him! ***\n")
+    sleep(2)
+    print(f"\n~~~ Your HP : [{p1.hp}] VS Norfir's(?) HP [{e1.ehp}] ~~~\n")
+    sleep(2)
+    while True:
+        epilogh4 = input('Choose your move! [A].Attack [B].Prepare [C].Focus:\n')
+        if epilogh4.lower().strip() in 'abc':
+            print("A mystical dark force rises from the orb and wraps Norfir(?). Like if it was nighttime,")
+            sleep(2)
+            print('everything went dark. An outlandish voice commanded you to stay still.')
+            sleep(2)
+            resist = input('\nDo you resist it? [Y] / [N] : ')
+            if resist.lower().strip() == 'y':
+                print('You try to turn around and run;') , sleep(5) , print('. . .') , sleep(2) , print('. . .\n')
+                print("You can't move a muscle. Is this the end?\n")
+                sleep(2)
+            else:
+                print('You stay still as commanded to.')
+                sleep(3)
+                print('You attempt to reach your pocket.')
+                sleep(3)
+                print("You can't move. Is this the end?")
+                sleep(2)
+            break
+        else:
+            print('Select your move!\n')
+    menu()
+
+
 def showdown(player,enemy):
-    print(f'The battle between you and the opposing {enemy.ename} , the {enemy.eclass} have begun!\n')
+    global dummy , edummy
+    dummy = copy.deepcopy(player)
+    edummy = copy.deepcopy(enemy)
+    print(f'The battle between you and the opposing {enemy.ename} , the {enemy.eclass} has begun!\n')
     while True:
         if player.alive() and enemy.ealive():
             moveoutcome(player,enemy)
-            emoveoutcome(player,enemy)
-        elif not enemy.ealive():
-            print('~~~You have won!~~~\n')
-            break
+            if enemy.ealive():
+                emoveoutcome(player,enemy)
+            elif not enemy.ealive():
+                print('\n~~~ You have won ~~~\n')
+                break
         elif not player.alive():
-            print('~~~You have died~~~')
+            print('\n~~~ You have died ~~~\n')
+            break
+        elif not enemy.ealive():
+            print('\n~~~ You have won! ~~~')
             break
         print(f"~~~ Your HP : [{player.hp}] ~~~  VS  ~~~ {enemy.ename}'s HP : [{enemy.ehp}] ~~~\n")
         print(f'~~~ Chance of landing an attack : {(20-enemy.eac)*5}% ~~~  VS  ~~~ Chance of being hit by an attack : {(20-player.ac)*5}% ~~~\n')
-        print(f"~~~ Expected damage from your attacks : {player.mindmg} - {player.maxdmg}~~~  VS  ~~~ Expected damage from opponent's attacks : {enemy.emindmg} - {enemy.emaxdmg}\n")
-    replay = input('Replay? [Y] / [N]')
+        print(f"~~~ Expected damage from your attacks : {player.mindmg} - {player.maxdmg}~~~  VS  ~~~ Expected damage from opponent's attacks : {enemy.emindmg} - {enemy.emaxdmg} ~~~\n")
+    replay = input('\nReplay? [Y] / [N] : \n')
     if replay.lower().strip() == 'y':
-        showdown(player,enemy)
+        showdown(dummy,edummy)
     else:
         menu()
-
 
 main()
