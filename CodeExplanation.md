@@ -75,3 +75,5 @@ The classes in this game are the one of the player ( Player() ) and of the CPU p
 - emoveoutcome(player,enemy) ------------> outcome of the moves the enemy 'selects'
 
 - showdown(player,enemy) ------------> the battle mechanism
+
+- tutorial() -----------> Obvious enough
