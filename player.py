@@ -275,6 +275,10 @@ class Enemy:
 
 def main():
     global p1 , e1 , name
+    print('     ____________     ')
+    print(' ---| Welcome to |--- ')
+    print(' ---| "The Game" |--- ')
+    print('     ------------     ')
     show = input('Show intro ? [Y] / [N] : ')
     if show.lower().strip() == 'y':
         intro()
