@@ -9,26 +9,36 @@ def d(n,faces):
     return dsum
 
 class Player:
-    global pclass , weapons , hitpoints , armourclass , damage , damagestr , mindmg , maxdmg
+    global pclass , weapons , hitpoints , armourclass , damagestr , mindmg , maxdmg , focus
     weapons = {'fighter': 'sword' , 'wizard': 'firebolt' , 'monk': 'fists'}
-    damagestr ={'fighter': 'd(3,6)' , 'wizard': 'd(2,12)' , 'monk': 'd(4,4)'}
-    damage = {'fighter': d(3,6) , 'wizard': d(2,12) , 'monk': d(4,4)}
+    damagestr ={'fighter': 'd(3,6)' , 'wizard': 'd(2,12)' , 'monk': 'd(5,4)'}
     armourclass = {'fighter': 8 , 'wizard': 6 , 'monk': 7}
     hitpoints = {'fighter': 120 , 'wizard': 100 , 'monk': 110}
-    mindmg = {'fighter': 3 , 'wizard': 2 , 'monk': 4}
-    maxdmg = {'fighter': 18 , 'wizard': 24 , 'monk': 16}
+    mindmg = {'fighter': 3 , 'wizard': 2 , 'monk': 5}
+    maxdmg = {'fighter': 18 , 'wizard': 24 , 'monk': 20}
+    focus = 0
 
     def __init__(self, pclass):
         self.pclass = pclass
         self.hp = hitpoints[self.pclass]
         self.weapon = weapons[self.pclass]
         self.ac = armourclass[self.pclass]
-        self.damage = damage[self.pclass]
         self.mindmg = mindmg[self.pclass]
         self.maxdmg = maxdmg[self.pclass]
         self.damagestr = damagestr[self.pclass]
 
+    def damage(self):
+        if self.pclass == 'fighter':
+            return d(3,6)
+        elif self.pclass == 'wizard':
+            return d(2,12)
+        elif self.pclass == 'monk':
+            return d(5,4)
+        else:
+            return d(int(vol),int(face))
+
     def custom(self):
+        global vol , face
         self.pclass = input('\nSelect your custom class : ')
         self.hp = input('\nSelect your HitPoint total ( 0 < Integer <= 1000) : ')
         while True:
@@ -64,31 +74,27 @@ class Player:
                 sleep(1)
                 self.damage = input('Select your damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ')
             elif self.damage == '1':
-                self.damage = damage['fighter']
                 self.mindmg = mindmg['fighter']
                 self.maxdmg = maxdmg['fighter']
                 self.damagestr = damagestr['fighter']
                 break
             elif self.damage == '2':
-                self.damage = damage['wizard']
                 self.mindmg = mindmg['wizard']
                 self.maxdmg = maxdmg['wizard']
                 self.damagestr = damagestr['wizard']
                 break
             elif self.damage == '3':
-                self.damage = damage['monk']
                 self.mindmg = mindmg['monk']
                 self.maxdmg = maxdmg['monk']
                 self.damagestr = damagestr['monk']
                 break
-            elif self.damage == 'c':
-                vol = input('\nHow many dice (min = 1 / max = 100)')
+            elif self.damage.lower() == 'c':
+                vol = input('\nHow many dice (min = 1 / max = 100) : ')
                 face = input('How many sides (Choose between 4 ,6 ,8 ,10 ,12 ,20) : ')
                 try:
                     int(vol)
                     int(face)
                     if ( 1 <= int(vol) <= 100 ) and (int(face) in [4, 6, 8, 10 ,12 ,20]):
-                        self.damage = d(int(vol), int(face))
                         self.mindmg = int(vol)
                         self.maxdmg = int(face)
                         self.damagestr = f'd({int(vol)}, {int(face)})'
@@ -134,25 +140,26 @@ class Player:
 
 
 class Enemy:
-    global eclass , eweapons , ehitpoints , earmourclass , edamage , edamagestr , emindmg , emaxdmg , ename ,lichname , zombname , skelname
-    eweapons = {'skeleton': 'dusty sword' , 'lich': 'witch bolt' , 'zombie': 'teeth and nails'}
-    edamage = {'skeleton': d(3,8) , 'lich': d(2,12) , 'zombie': d(4,6)}
-    edamagestr = {'skeleton': 'd(3,8)' , 'lich': 'd(2,12)' , 'zombie': 'd(4,6)}'}
-    earmourclass = {'skeleton': 10 , 'lich': 8 , 'zombie': 9}
-    ehitpoints = {'skeleton': 160 , 'lich': 140 , 'zombie': 150}
-    emindmg =  {'skeleton': 3 , 'lich': 2 , 'zombie': 4}
-    emaxdmg = {'skeleton': 24 , 'lich': 24 , 'zombie': 24}
+    global eclass , eweapons , ehitpoints , earmourclass , edamagestr , emindmg , emaxdmg , ename ,lichname , zombname , skelname , gobname , orcname , efocus
+    eweapons = {'skeleton': 'dusty sword' , 'lich': 'witch bolt' , 'zombie': 'teeth and nails' , 'goblin': 'scimitar' , 'orc': 'greataxe' , 'imp': 'sting'}
+    edamagestr = {'skeleton': 'd(3,8)' , 'lich': 'd(2,12)' , 'zombie': 'd(4,6)}' , 'goblin':'d(3,10)' , 'orc': 'd(3,12)', 'imp': 'd(7,4)'}
+    earmourclass = {'skeleton': 10 , 'lich': 8 , 'zombie': 9 , 'goblin': 7 , 'orc': 10, 'imp':8}
+    ehitpoints = {'skeleton': 120 , 'lich': 110 , 'zombie': 115 , 'goblin':100 , 'orc':140 , 'imp':105}
+    emindmg =  {'skeleton': 4 , 'lich': 3 , 'zombie': 5 , 'goblin':3 ,'orc':3 ,'imp':7}
+    emaxdmg = {'skeleton': 32 , 'lich': 36 , 'zombie': 30, 'goblin':30, 'orc':36 ,'imp':28}
     zombname = ['Dancer', 'Gnawer', 'Frenzied', 'Blabber','Riper','Clacker','Slumper','Mutant','Grower','Primer']
     lichname = ["Cram'ghaic","Mhud'ghe","Chozgee","Kradredh","Vhoktag","Thoq'gac","Nanzagradh","Shum'zoudas","Dykragnuk","Thek'vagnudh"]
     skelname = ["Naeryndam Herfir", "Thalanil Miranan", "Hagwin Balrieth", "Onas Virrel", "Aolis Enren","Braumseild", "Tyegnedrorr", "Lul"]
-    ename = zombname + lichname + skelname
+    gobname = ['Ung','Slierx','Woild','Jyk','Brerx','Stiabniark','Slelikx','Crikir','Blegneng','Udyr']
+    orcname = ['Jukkhag','Omaghed','Urghat','Hugagug','Khargol','Xago','Xug','Knorgh','Snugug','Bugak']
+    ename = zombname + lichname + skelname + orcname + gobname
+    efocus = 0
 
     def __init__(self, eclass):
         self.eclass = eclass
         self.ehp = ehitpoints[self.eclass]
         self.eweapon = eweapons[self.eclass]
         self.eac = earmourclass[self.eclass]
-        self.edamage = edamage[self.eclass]
         self.emindmg = emindmg[self.eclass]
         self.emaxdmg = emaxdmg[self.eclass]
         self.edamagestr = edamagestr[self.eclass]
@@ -162,8 +169,31 @@ class Enemy:
             self.ename = skelname[randint(0,len(skelname)-1)]
         elif eclass == 'lich':
             self.ename = lichname[randint(0,len(lichname)-1)]
+        elif eclass == 'goblin':
+            self.ename = gobname[randint(0,len(gobname)-1)]
+        elif eclass == 'orc':
+            self.ename = orcname[randint(0,len(orcname)-1)]
+        elif eclass == 'imp':
+            self.ename = '???'
+
+    def edamage(self):
+        if self.eclass == 'skeleton':
+            return d(4,8)
+        elif self.eclass == 'lich':
+            return d(3,12)
+        elif self.eclass == 'zombie':
+            return d(5,6)
+        elif self.eclass == 'goblin':
+            return d(3,10)
+        elif self.eclass == 'orc':
+            return d(3,12)
+        elif self.eclass == 'imp':
+            return d(7,4)
+        else:
+            return d(int(vol),int(face))
 
     def ecustom(self):
+        global vol ,face
         self.eclass = input("\nSelect your opponent's custom class : ")
         while True:
             self.ename = input("\nSelect your opponent's name , type [r] for random : ")
@@ -172,14 +202,18 @@ class Enemy:
                 break
             else:
                 break
-        self.ehp = input(f"\nSelect  {self.ename}'s HitPoint total (Integer) : ")
+        self.ehp = input(f"\nSelect {self.ename}'s HitPoint total ( 0 < Integer <= 1000) : ")
         while True:
             try:
                 int(self.ehp)
-                break
+                if 0 >= int(self.ehp) or int(self.ehp) > 1000:
+                    print('Enter a valid number ')
+                    self.ehp = input(f"\nSelect {self.ename}'s HitPoint total (Integer) : ")
+                else:
+                    break
             except:
                 print('Enter a valid number ')
-                self.ehp = input(f"\nSelect  {self.ename}'s HitPoint total (Integer) : ")
+                self.ehp = input(f"\nSelect {self.ename}'s HitPoint total (Integer) : ")
         self.ehp = int(self.ehp)
         self.eweapon = input(f"\nSelect  {self.ename}'s weapon : ")
         while True:
@@ -193,40 +227,51 @@ class Enemy:
                     print('Invalid input , try again. ')
             except:
                 print('Invalid input , try again.')
-        self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ")
+        self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].4d8 [2].3d12 [3].5d6 [4].3d10 [5].7d4 [i].info [c].Custom : ")
         while True:
             if self.edamage.lower() == 'i':
                 print('XdY in tabletop rpg games means X dice with Y faces')
                 sleep(2)
                 print('For example , 3d6 means that you roll 3 (three) 6-sided dice')
                 sleep(1)
-                self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].info [c].Custom : ")
+                self.edamage = input(f"\nSelect  {self.ename}'s damage type: [1].4d8 [2].3d12 [3].5d6 [4].3d10 [5].7d4 [i].info [c].Custom : ")
             elif self.edamage == '1':
-                self.edamage = edamage['skeleton']
+                self.eclass = 'skeleton'
                 self.emindmg = emindmg['skeleton']
                 self.emaxdmg = emaxdmg['skeleton']
                 self.edamagestr = edamagestr['skeleton']
                 break
             elif self.edamage == '2':
-                self.edamage = edamage['lich']
+                self.eclass = 'lich'
                 self.emindmg = emindmg['lich']
                 self.emaxdmg = emaxdmg['lich']
                 self.edamagestr = edamagestr['lich']
                 break
             elif self.edamage == '3':
-                self.edamage = edamage['zombie']
+                self.eclass = 'zombie'
                 self.emindmg = emindmg['zombie']
                 self.emaxdmg = emaxdmg['zombie']
                 self.edamagestr = edamagestr['zombie']
                 break
-            elif self.edamage == 'c':
-                vol = input('\nHow many dice (min = 1 / max = 100)')
+            elif self.edamage == '4':
+                self.eclass = 'goblin'
+                self.emindmg = emindmg['goblin']
+                self.emaxdmg = emaxdmg['goblin']
+                self.edamagestr = edamagestr['goblin']
+                break
+            elif self.edamage == '5':
+                self.eclass = 'imp'
+                self.emindmg = emindmg['imp']
+                self.emaxdmg = emaxdmg['imp']
+                self.edamagestr = edamagestr['imp']
+                break
+            elif self.edamage.lower() == 'c':
+                vol = input('\nHow many dice (min = 1 / max = 100) : ')
                 face = input('How many sides ( Choose between 4 ,6 ,8 ,10 ,12 ,20 ) : ')
                 try:
                     int(vol)
                     int(face)
                     if (1 <= int(vol) <= 100) and (int(face) in [4, 6, 8, 10, 12, 20]):
-                        self.edamage = d(int(vol), int(face))
                         self.emindmg = int(vol)
                         self.emaxdmg = int(face)
                         self.edamagestr = f'd({int(vol)}, {int(face)})'
@@ -237,10 +282,10 @@ class Enemy:
                     print('Invalid input , try again. ')
             else:
                 print('Enter a valid choice \n')
-                self.edamage = input("Select  {self.ename}'s damage type: [1].3d6 [2].2d12 [3].4d4 [i].Info [c].Custom")
+                self.edamage = input(f"Select {self.ename}'s damage type: [1].4d8 [2].3d12 [3].5d6 [4].3d10 [5].7d4 [i].Info [c].Custom")
 
     def egetstats(self):
-        self.estats = [self.eclass, self.ehp, self.eweapon,  self.eac, self.edamage]
+        self.estats = [self.eclass, self.ehp, self.eweapon,  self.eac, self.edamagestr]
         return self.estats
 
     def move(self):
@@ -279,13 +324,14 @@ def main():
     print(' ---| Welcome to |--- ')
     print(' ---| "The Game" |--- ')
     print('     ------------     ')
-    name = input('Enter your name : ')
-    show = input('Show intro ? [Y] / [N] : ')
+    name = input('\nEnter your name : ')
+    show = input('\nShow intro ? [Y] / [N] : ')
     if show.lower().strip() == 'y':
         intro()
-    tut = input('Play the Tutorial? (Strongly suggested for those that have not played the game yet) [Y] / [N] : ')
+    tut = input('\nPlay the Tutorial? (Strongly suggested for those that have not played the game yet) [Y] / [N] : ')
     if tut.lower().strip() == 'y':
         tutorial()
+    print('\n')
     menu()
 
 def menu():
@@ -329,8 +375,8 @@ def info():
     sleep(2)
     print('The key traits of your character are: Class , HitPoints , Damage and Armour Class\n')
     sleep(2)
+    know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
     while True:
-        know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         if know.lower().strip() == 'class':
             print('''            Character Class is the path your character has chosen in their life.
             In this pre Alpha version , in non-custom battles , your character can be
@@ -338,12 +384,14 @@ def info():
             opponents have a limited variety of classes.\n  ''' )
             print()
             print('Note: Your class determines your damage input as well as your HitPoint total and ArmourClass!\n')
+            know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         elif know.lower().strip() == 'hp':
             print('''            Your HitPoint total represents your ability to survive damage in battle.
             The more HitPoints you have , the harder it is for you to be dealt lethal
             damage from a hit and die.\n  ''')
             print()
             print('Note: Your HitPoint total varies for different character classes!\n')
+            know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         elif know.lower().strip() == 'dmg':
             print('''            The term damage represents the lethality of your hits versus your opponent's 
             HitPoint total. You can deal damage to your opponent by selecting the [Attack]
@@ -351,6 +399,7 @@ def info():
             deal more damage. \n  ''')
             print()
             print('Note: Your damage varies for different character classes!\n')
+            know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         elif know.lower().strip() == 'ac':
             print('''            Your ArmourClass score represents your ability to not be hit or affected by
             an attack. When attacking or being attacked , a 20-sided dice is rolled and if that roll is 
@@ -360,6 +409,7 @@ def info():
             to make it harder for your opponent to hit you (and vise-versa).\n  ''')
             print()
             print('Note: Your AC varies for different classes!\n')
+            know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         elif know.lower().strip() == 'modes':
             print('''            The modes in this pre Alpha version are: Classic & Custom.
             In Classic , you may choose to be a character with pre determined stats
@@ -369,6 +419,7 @@ def info():
             one of your own. For the time being , you cannot save your own characters or opponents.\n  ''')
             print()
             print('Note: This took way longer than expected...\n')
+            know = input('For which asset do you want to know about? [class] / [hp] / [dmg] / [ac] / [modes] / [quit]\n')
         elif know.lower().strip() == 'quit':
             print('You are now exiting the info menu.\n')
             menu()
@@ -377,6 +428,7 @@ def info():
             print("That asset doesn't exist / Invalid choice.")
             print('You are heading back to the main menu\n')
             menu()
+            break
 
 def intro():
     print('\nWelcome to the pre Alpha version of "The Game" (Pending title).\n')
@@ -427,26 +479,33 @@ def select():
     return char
 
 def challenger():
-    enemylist = ['skeleton', 'lich', 'zombie']
+    enemylist = ['skeleton', 'lich', 'zombie', 'goblin', 'orc']
     while True:
-        enemy = input('Choose your opponent: [1].skeleton [2].lich [3].zombie [r].Random')
+        enemy = input('Choose your opponent: [1].Skeleton [2].Lich [3].Zombie [4].Goblin [5].Orc [6].Imp [r].Random')
         if enemy == '1' or enemy.lower() == 'skeleton':
             return 'skeleton'
         elif enemy == '2' or enemy.lower() == 'lich':
             return 'lich'
-        elif enemy == '3'or enemy.lower() == 'zombie':
+        elif enemy == '3' or enemy.lower() == 'zombie':
             return 'zombie'
+        elif enemy == '4' or enemy.lower() == 'goblin':
+            return 'goblin'
+        elif enemy == '5' or enemy.lower() == 'orc':
+            return 'orc'
+        elif enemy == '6' or enemy.lower() == 'imp':
+            return 'imp'
         elif enemy.lower().strip() == 'r':
-            return enemylist[randint(0, 2)]
+            return enemylist[randint(0, len(enemylist)-1)]
         else:
             print('Invalid choice.\n')
 
 def moveoutcome(player,enemy):
-    global c , ch , dmg
+    global c , ch , focus
     c = [0, 0, 0]
     ch = 0
     mymove = player.move()
     roll = d(1,20)
+    dmg = player.damage() + focus
     if mymove == 1:
         c[0]+=1
         ch = 1
@@ -458,15 +517,13 @@ def moveoutcome(player,enemy):
             if roll == 20:
                 print('\n### Critical Hit ###\n')
                 sleep(2)
-                dmg = 2 * player.damage
-                print(f'You dealt a total of {dmg} points of damage to  {enemy.ename}!\n')
-                enemy.ehp -= dmg
+                enemy.ehp -= 2 * dmg
+                print(f'You dealt a total of {2 * dmg} points of damage to  {enemy.ename}!\n')
                 return True
             else:
-                dmg = player.damage
                 sleep(2)
-                print(f'You dealt a total of {dmg} points of damage!\n')
                 enemy.ehp -= dmg
+                print(f'You dealt a total of {dmg} points of damage!\n')
                 return True
         else:
             print("The attack doesn't hit...\n")
@@ -487,15 +544,16 @@ def moveoutcome(player,enemy):
         c[2] += 1
         ch = 3
         print('Your next attacks will be more devastating!\n')
-        player.damage += d(1,4)
+        focus += d(1,4)
         player.mindmg += 1
         player.maxdmg += 4
         return True
 
 def emoveoutcome(player,enemy):
-    global edmg
+    global efocus
     theirmove = enemy.move()
     eroll = d(1,20)
+    edmg = enemy.edamage() + efocus
     if theirmove == 1:
         print(f'The enemy rolled a {eroll}!')
         sleep(1)
@@ -505,19 +563,17 @@ def emoveoutcome(player,enemy):
             if eroll == 20:
                 print('\n### Critical Hit ###\n')
                 sleep(2)
-                edmg = 2 * enemy.edamage
-                print(f' {enemy.ename} dealt {edmg} points of damage to you!\n')
-                player.hp -= edmg
+                player.hp -= 2 * edmg
+                print(f' {enemy.ename} dealt {2 * edmg} points of damage to you!\n')
             else:
-                edmg = enemy.edamage
+                player.hp -= edmg
                 sleep(2)
                 print(f' {enemy.ename} dealt {edmg} points of damage to you!\n')
-                player.hp -= edmg
         else:
             print("The attack doesn't hit...\n")
     elif theirmove == 2:
         sleep(1)
-        if enemy.eac >= 17.5:
+        if enemy.eac >= 15:
             print(f"{enemy.ename} cannot make it any harder for you to hit them")
         else:
             print(f'It will be now harder to hit  {enemy.ename}!\n')
@@ -525,9 +581,9 @@ def emoveoutcome(player,enemy):
     elif theirmove == 3:
         sleep(1)
         print(f"{enemy.ename}'s next attacks will be more devastating!\n")
-        enemy.edamage += d(1,10)
+        efocus += d(1,8)
         enemy.emindmg += 1
-        enemy.emaxdmg += 10
+        enemy.emaxdmg += 8
 
 def tutorial():
     print(f'\nWelcome to the tutorial {name} , where (I hope!) most of your possible questions about the game will be cleared out!\n')
@@ -730,12 +786,11 @@ def tutorial():
             print('Select your move!\n')
     menu()
 
-
 def showdown(player,enemy):
     global dummy , edummy
     dummy = copy.deepcopy(player)
     edummy = copy.deepcopy(enemy)
-    print(f'The battle between you and the opposing {enemy.ename} , the {enemy.eclass} has begun!\n')
+    print(f'\nThe battle between you and the opposing {enemy.ename} , the {enemy.eclass} has begun!\n')
     while True:
         if player.alive() and enemy.ealive():
             moveoutcome(player,enemy)
@@ -751,8 +806,11 @@ def showdown(player,enemy):
             print('\n~~~ You have won! ~~~')
             break
         print(f"~~~ Your HP : [{player.hp}] ~~~  VS  ~~~ {enemy.ename}'s HP : [{enemy.ehp}] ~~~\n")
+        sleep(0.5)
         print(f'~~~ Chance of landing an attack : {(20-enemy.eac)*5}% ~~~  VS  ~~~ Chance of being hit by an attack : {(20-player.ac)*5}% ~~~\n')
+        sleep(0.5)
         print(f"~~~ Expected damage from your attacks : {player.mindmg} - {player.maxdmg}~~~  VS  ~~~ Expected damage from opponent's attacks : {enemy.emindmg} - {enemy.emaxdmg} ~~~\n")
+        sleep(0.5)
     replay = input('\nReplay? [Y] / [N] : \n')
     if replay.lower().strip() == 'y':
         showdown(dummy,edummy)
