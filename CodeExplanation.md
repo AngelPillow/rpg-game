@@ -23,25 +23,29 @@ The classes in this game are the one of the player ( Player() ) and of the CPU p
 2) weapon , i.e. sword
 3) hitpoints (the so called HP) , i.e. 120 HP
 4) armourclass (AC) , i.e. 12
-5) damage (points of damage) , i.e. 12 damage
-6) damagestr   -------> for in-game display purposes
-7) mindmg  -------> Displays the minimum damage output you can deal
-8) maxdmg  -------> Displays the maximum damage output you can deal
+5) damagestr   -------> for in-game display purposes
+6) mindmg  -------> Displays the minimum damage output you can deal
+7) maxdmg  -------> Displays the maximum damage output you can deal
 
 ~Functions
 -----------
-1)Custom ------> Create a custom character with their own statblock
+1)custom ------> Create a custom character with their own statblock
+
 2)getstats --------> I don't know why it is still here , testing purposes
+
 3)move ---------> Select your move
+
 4)alive ----------> if your character is above 0 HP
 
-
+5)damage ----------> character damage
 
 
 #Enemy Class
 ---------------
 (Same characteristics as above , but to call them I have added the e- in front of the original , i.e. eweapon / edamage)
+
 9)skelname , lichname , zombname ----------> lists of possible names for opposing skeletons , liches , zombies 
+
 10)ename ----------> all of the above as a united list , used for custom enemies
 
 ~Functions
